@@ -14,19 +14,25 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user }) {
       try {
-        // Check if the user already exists in the database
-        const existingUser = await prisma.user.findUnique({
-          where: {
-            email: user.email,
-          },
-        });
+        // Ensure user.email is a string before querying
+        if (user.email) {
+          // Check if the user already exists in the database
+          const existingUser = await prisma.user.findUnique({
+            where: {
+              email: user.email, // Now it's guaranteed to be a string
+            },
+          });
 
-        if (existingUser) {
-          // User exists, allow sign in
-          return true;
+          if (existingUser) {
+            // User exists, allow sign in
+            return true;
+          } else {
+            // User does not exist, redirect to registration page
+            return `/`;
+          }
         } else {
-          // User does not exist, redirect to registration page
-          return `/`;
+          // If email is null or undefined, handle accordingly
+          return false; // Prevent sign in if email is not valid
         }
       } catch (error) {
         console.error('Error checking user in signIn callback:', error);
