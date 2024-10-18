@@ -1,11 +1,16 @@
 // app/api/register/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, PrismaClientKnownRequestError } from "@prisma/client"; // Ensure this is imported
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
+
+// Type guard function to check if an error is a known Prisma error
+function isPrismaError(error: unknown): error is PrismaClientKnownRequestError {
+  return (error as PrismaClientKnownRequestError).code !== undefined;
+}
 
 export async function POST(req: NextRequest) {
   const { name, email, linkedinUrl, password } = await req.json();
@@ -79,14 +84,18 @@ export async function POST(req: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
-    if (error.code === "P2002") {
-      // This error code indicates a unique constraint violation (e.g., email already registered)
-      return NextResponse.json(
-        { message: "Email already registered." },
-        { status: 400 }
-      );
+  } catch (error: unknown) {
+    if (isPrismaError(error)) {
+      if (error.code === "P2002") {
+        // This error code indicates a unique constraint violation (e.g., email already registered)
+        return NextResponse.json(
+          { message: "Email already registered." },
+          { status: 400 }
+        );
+      }
     }
+
+    // Fallback for other unknown errors
     return NextResponse.json(
       { message: "Something went wrong." },
       { status: 500 }

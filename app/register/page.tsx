@@ -73,11 +73,23 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      await axios.post("/api/register", formData);
+      const response = await axios.post("/api/register", formData); // Keep as register API
 
+      // Assuming your backend responds with a token, handle it here
+      const { token } = response.data;
+
+      // Store the token (you can use localStorage or context/state)
+      localStorage.setItem("token", token);
+      // Redirect or perform any other actions after successful registration
       router.push("/");
-    } catch (error: any) {
-      setSubmitError(error.response?.data?.message || "An error occurred.");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response) {
+        // Check if the error is an Axios error and has a response
+        setSubmitError(error.response.data.message || "An error occurred.");
+      } else {
+        // Handle any other type of error
+        setSubmitError("An unknown error occurred.");
+      }
     } finally {
       setLoading(false);
     }
