@@ -1,9 +1,10 @@
 // app/api/register/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient, PrismaClientKnownRequestError } from "@prisma/client"; // Ensure this is imported
+import { PrismaClient } from "@prisma/client"; // Ensure this is imported
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const prisma = new PrismaClient();
 
