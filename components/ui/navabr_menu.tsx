@@ -76,7 +76,7 @@ export default function NavabrMenu({ isOpen, setIsOpen }: NavabrMenuProps) {
       </div>
       <div className="flex flex-col  items-center gap-6 px-2">
         <Link
-          href="#"
+          href="/login"
           className="text-[#131319] w-full text-center font-medium hover:opacity-55 active:hover:opacity-65 transition-all duration-300"
         >
           Log in
