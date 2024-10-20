@@ -496,13 +496,13 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="max-w-[662px] bg-[#F4F2F0] py-6 px-[60px] rounded-[24px] border-[#CCCCCC] border-[1px]">
+          <div className="max-w-[662px] bg-[#F4F2F0] py-6 sm:px-[60px] px-[10px] rounded-[24px] border-[#CCCCCC] border-[1px]">
             {/* Title */}
             <h1 className="text-[24px] font-semibold tracking-[-2px] leading-[29.05px] text-[#03390F] mb-6 font-['Inter']">
               Technical interview success rate
             </h1>
 
-            <div className="w-[542px]">
+            <div className="sm:w-[542px]">
               {/* Interview Pro */}
               <div className="flex items-center gap-[19px] mb-[12px]">
                 <div className="flex justify-between items-center">
@@ -510,7 +510,7 @@ export default function Home() {
                     Interview Pro
                   </span>
                 </div>
-                <div className="bg-[#05A105] rounded-lg w-[355px] py-[19.5px] flex justify-end pr-[23px]">
+                <div className="bg-[#05A105] rounded-lg sm:w-[355px] w-[255px] py-[19.5px] flex justify-end pr-[23px]">
                   <span className="text-[#FFFFFF] font-bold">32.5%</span>
                 </div>
               </div>
