@@ -117,7 +117,7 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <form className="w-[480px] mx-auto mt-[140px] max-sm:px-2">
+          <form className="sm:w-[480px] mx-auto mt-[140px] max-sm:px-2">
             <h2 className="text-[30px] font-semibold mb-3 leading-[38px] max-lg:text-center">
               Log in
             </h2>
@@ -235,7 +235,7 @@ export default function LoginPage() {
               <span className="text-[#475467] text-[14px] ">
                 Don’t have an account?{" "}
                 <Link href={"/register"} className="text-[#05A105]">
-                  Log in
+                  Register
                 </Link>
               </span>
             </div>
