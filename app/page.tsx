@@ -8,9 +8,20 @@ import { MarqueeDemo } from "@/components/ui/marquee_card";
 import FaqPage from "@/components/ui/faq_page";
 import NavabrMenu from "@/components/ui/navabr_menu";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+
+  if (loading) {
+    console.log("Session is loading...");
+  } else if (!session) {
+    console.log("No active session found. User is not logged in.");
+  } else {
+    console.log("Session:", session);
+  }
 
   return (
     <>
@@ -58,12 +69,22 @@ export default function Home() {
               </ul>
             </div>
             <div className="md:flex hidden items-center gap-6">
-              <Link
-                href="/login"
-                className="text-[#131319] font-medium hover:opacity-55 active:hover:opacity-65 transition-all duration-300"
-              >
-                Log in
-              </Link>
+              {loading ? (
+                <p>Loading...</p>
+              ) : session ? (
+                // Display username if logged in
+                <p className="font-medium text-[#131319]">
+                  {session.user.name}
+                </p>
+              ) : (
+                // Display login link if not logged in
+                <Link
+                  href="/login"
+                  className="font-medium text-[#131319] hover:opacity-65 active:opacity-55 transition-all duration-300"
+                >
+                  Login
+                </Link>
+              )}
               <Link
                 href="#"
                 className="bg-[#05A105] text-[#fff] font-medium rounded-[9999px] py-[10px] px-[18px] hover:opacity-55 active:hover:opacity-65 transition-all duration-300"

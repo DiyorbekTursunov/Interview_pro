@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+// app/layout.tsx (Server Component)
+
+import ClientWrapper from "@/components/ClientWrapper";
 import "./globals.css";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Expert Interview Series | FAAN",
   description:
     "Join us for insightful interviews with industry leaders. Discover trends, tips, and strategies to enhance your aviation knowledge.",
@@ -12,12 +14,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {/* Wrap children with ClientWrapper to handle session logic */}
+        <ClientWrapper>{children}</ClientWrapper>
+      </body>
     </html>
   );
 }
