@@ -11,45 +11,45 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'default-client-secret',
     }),
   ],
+  session: {
+    strategy: 'jwt', // Use JWT for session handling
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
   callbacks: {
     async signIn({ user }) {
       try {
-        // Ensure user.email is a string before querying
         if (user.email) {
-          // Check if the user already exists in the database
           const existingUser = await prisma.user.findUnique({
-            where: {
-              email: user.email, // Now it's guaranteed to be a string
-            },
+            where: { email: user.email },
           });
-
-          if (existingUser) {
-            // User exists, allow sign in
-            return true;
-          } else {
-            // User does not exist, redirect to registration page
-            return `/`;
-          }
-        } else {
-          // If email is null or undefined, handle accordingly
-          return false; // Prevent sign in if email is not valid
+          return existingUser ? true : '/'; // Redirect if user not found
         }
+        return false; // Prevent sign-in if email is not valid
       } catch (error) {
-        console.error('Error checking user in signIn callback:', error);
-        return false; // Prevent sign in if there's an error
+        console.error('Error during sign-in:', error);
+        return false;
       }
     },
-    async redirect({ baseUrl }) {
-      // Redirect to the home page after sign-in unless handled by signIn callback
-      return baseUrl;
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id; // Ensure user ID is set correctly
+        token.email = user.email; // Ensure email is set correctly
+      }
+      return token; // Return updated token
     },
     async session({ session, token }) {
-      // Attach user information to the session object
-      session.user.id = token.id;
-      return session;
+      // Check if token.id exists and is a string
+      if (typeof token.id === 'string') {
+        session.user.id = token.id; // Assign token.id if it's a valid string
+      } else {
+        console.error('Token ID is not valid:', token.id);
+        // Handle the case where token.id is not a valid string
+      }
+      session.token = token; // Save the JWT token in the session
+      return session; // Return updated session
     },
   },
-  // Other NextAuth.js configuration...
+  secret: process.env.NEXTAUTH_SECRET,
 });
 
 export { handler as GET, handler as POST };

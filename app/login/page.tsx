@@ -22,6 +22,8 @@ type FormErrors = {
 };
 
 export default function LoginPage() {
+  const [isOpen, setIsOpen] = useState(false);
+
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -30,7 +32,6 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,14 +64,35 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const response = await axios.post("/api/login", formData); // Update to login API
+      // Use NextAuth's signIn method
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+      });
 
-      // Assuming your backend responds with a token, handle it here
-      const { token } = response.data;
+      if (result?.error) {
+        setSubmitError(result.error);
+      } else {
+        // Save the login details to the pisma database
+        await saveToPismaDatabase(); // Assuming email is the relevant detail
+
+        // Redirect to the homepage or wherever you want after successful login
+        router.push("/");
+      }
+    } catch (error: unknown) {
+      setSubmitError("An unknown error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to save the login details to the pisma database
+  const saveToPismaDatabase = async () => {
+    try {
+      await axios.post("/api/register", formData); // Keep as register API
 
       // Store the token (you can use localStorage or context/state)
-      localStorage.setItem("token", token);
-      // Redirect or perform any other actions after login
       router.push("/");
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
@@ -80,8 +102,6 @@ export default function LoginPage() {
         // Handle any other type of error
         setSubmitError("An unknown error occurred.");
       }
-    } finally {
-      setLoading(false);
     }
   };
 
