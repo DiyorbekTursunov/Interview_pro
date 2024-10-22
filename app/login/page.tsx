@@ -64,17 +64,18 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      // Use NextAuth's signIn method
+      // Use NextAuth's signIn method with the callback URL set to the homepage
       const result = await signIn("credentials", {
         redirect: false,
         email: formData.email,
         password: formData.password,
+        callbackUrl: "/", // Redirect to homepage after login
       });
 
       if (result?.error) {
         setSubmitError(result.error);
       } else {
-        // Save the login details to the pisma database
+        // Save the login details to the prisma database
         await saveToPismaDatabase(); // Assuming email is the relevant detail
 
         // Redirect to the homepage or wherever you want after successful login
