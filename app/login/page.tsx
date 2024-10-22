@@ -80,8 +80,8 @@ export default function LoginPage() {
         // Redirect to the homepage or wherever you want after successful login
         router.push("/");
       }
-    } catch () {
-      setSubmitError("An unknown error occurred.");
+    } catch (error: unknown) {
+      setSubmitError(`An unknown error occurred. ${error}`);
     } finally {
       setLoading(false);
     }
