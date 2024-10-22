@@ -38,14 +38,10 @@ const handler = NextAuth({
       return token; // Return updated token
     },
     async session({ session, token }) {
-      // Check if token.id exists and is a string
       if (typeof token.id === 'string') {
-        session.user.id = token.id; // Assign token.id if it's a valid string
-      } else {
-        console.error('Token ID is not valid:', token.id);
-        // Handle the case where token.id is not a valid string
+        session.user.id = token.id; // Assign token.id to session.user
       }
-      session.token = token; // Save the JWT token in the session
+      session.user.email = token.email; // Assign token.email to session.user
       return session; // Return updated session
     },
   },
